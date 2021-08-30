@@ -1,5 +1,6 @@
 import { fetchImages, PER_PAGE } from './api-service';
 import * as basicLightbox from 'basiclightbox';
+import {error} from '@pnotify/core'
 import cardTemplate from './partials/card';
 import './sass/main.scss';
 
@@ -100,9 +101,16 @@ function getImages() {
   if (currentQuery.length) {
     fetchImages({ page: currentPage, q: currentQuery }).then(response => {
       const { hits: images } = response;
+      if (!currentImages.length && !images.length ) {
+        error({
+            text: 'Enter the correct text!'
+        })
+        return;
+      }
       currentImages.push(...images);
       renderLoadButton(images);
       renderImages(currentImages);
+    
     });
   }
 }
